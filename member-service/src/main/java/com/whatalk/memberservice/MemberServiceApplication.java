@@ -1,13 +1,13 @@
-package com.whatalk.userservice;
+package com.whatalk.memberservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UserServiceApplication {
+public class MemberServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserServiceApplication.class, args);
+        SpringApplication.run(MemberServiceApplication.class, args);
     }
 
 }

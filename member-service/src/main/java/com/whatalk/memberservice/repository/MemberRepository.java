@@ -1,4 +1,4 @@
-package com.whatalk.memberservice.MemberRepository;
+package com.whatalk.memberservice.repository;
 
 import com.whatalk.memberservice.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;

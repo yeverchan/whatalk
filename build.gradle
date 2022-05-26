@@ -24,13 +24,16 @@ subprojects {
     apply plugin: "$boot"
     apply plugin: "io.spring.dependency-management"
 
+
     repositories {
         mavenCentral()
     }
 
     dependencies {
         compileOnly lombok
+        testCompileOnly lombok
         annotationProcessor lombok
+        testAnnotationProcessor lombok
 
         testImplementation "$boot:spring-boot-starter-test"
     }
@@ -43,6 +46,4 @@ subprojects {
 project(':member-service') {
     bootJar.enabled(false)
     jar.enabled(true)
-
-    dependencies {}
 }

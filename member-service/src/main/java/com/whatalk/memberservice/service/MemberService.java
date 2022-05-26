@@ -1,13 +1,14 @@
-package com.whatalk.memberservice.repository;
+package com.whatalk.memberservice.service;
 
 import com.whatalk.memberservice.domain.Member;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberService {
 
     Optional<Member> findByEmail(String email);
     List<Member> findAllByName(String name);
+
+    Member create(Member member);
 }

@@ -1,3 +1,4 @@
 rootProject.name = 'whatalk'
 
 include 'member-service'
+

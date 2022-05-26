@@ -43,4 +43,6 @@ subprojects {
 project(':member-service') {
     bootJar.enabled(false)
     jar.enabled(true)
+
+    dependencies {}
 }

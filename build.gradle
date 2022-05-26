@@ -1,22 +1,46 @@
-plugins {
-    id 'org.springframework.boot' version '2.7.0'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'java'
+
+buildscript {
+    ext {
+        boot = "org.springframework.boot"
+        bootVersion = "2.7.0"
+        lombok = "org.projectlombok:lombok"
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("$boot:spring-boot-gradle-plugin:$bootVersion")
+    }
 }
 
-group = 'com.whatalk'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
-
-repositories {
-    mavenCentral()
+allprojects {
+    group = "com.whatalk"
+    version = "1.0.0"
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+subprojects {
+
+    apply plugin: "java"
+    apply plugin: "$boot"
+    apply plugin: "io.spring.dependency-management"
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compileOnly lombok
+        annotationProcessor lombok
+
+        testImplementation "$boot:spring-boot-starter-test"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+project(':member-service') {
+    bootJar.enabled(false)
+    jar.enabled(true)
 }

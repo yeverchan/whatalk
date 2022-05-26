@@ -1,7 +1,6 @@
 package com.whatalk.memberservice.service;
 
 import com.whatalk.memberservice.domain.Member;
-import com.whatalk.memberservice.helper.MemberTestHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +16,6 @@ public class MemberServiceTest {
 
     @Autowired
     MemberService memberService;
-
-    @Autowired
-    MemberTestHelper memberTestHelper;
 
 
     @DisplayName("회원 가입 테스트")

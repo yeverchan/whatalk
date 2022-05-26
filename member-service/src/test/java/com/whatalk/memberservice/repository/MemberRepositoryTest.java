@@ -1,7 +1,6 @@
 package com.whatalk.memberservice.repository;
 
 import com.whatalk.memberservice.domain.Member;
-import com.whatalk.memberservice.helper.MemberTestHelper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,6 @@ class MemberRepositoryTest {
 
     @Autowired
     MemberRepository memberRepository;
-
-    @Autowired
-    MemberTestHelper memberTestHelper;
 
 
     @DisplayName("멤버 세이브 테스트")
@@ -46,7 +42,7 @@ class MemberRepositoryTest {
         List<Member> memberList = memberRepository.findAll();
         assertThat(memberList.size()).isEqualTo(0);
 
-        memberTestHelper.createMembers(3);
+        createMembers(3);
 
         memberList = memberRepository.findAll();
         assertThat(memberList.size()).isEqualTo(3);
@@ -56,13 +52,36 @@ class MemberRepositoryTest {
     @Test
     void test_findAllByName() {
 
-        memberTestHelper.createMember("테스트1", "테스트");
-        memberTestHelper.createMember("테스트2", "테스트");
-        memberTestHelper.createMember("테스트3", "테스트");
-        memberTestHelper.createMember("멤버", "멤버");
-        memberTestHelper.createMember("유저", "유저");
+        createMember("테스트1", "테스트");
+        createMember("테스트2", "테스트");
+        createMember("테스트3", "테스트");
+        createMember("멤버", "멤버");
+        createMember("유저", "유저");
 
         List<Member> equalsNameMemberList = memberRepository.findAllByName("테스트");
         assertThat(equalsNameMemberList.size()).isEqualTo(3);
+    }
+
+
+    public void createMember(String emailId, String memberName) {
+        Member member = Member.builder()
+                .email(emailId + "@email.com")
+                .password("password")
+                .name(memberName)
+                .build();
+
+        memberRepository.save(member);
+    }
+
+    public void createMembers(int size) {
+        for (int i = 1; i <= size; i++) {
+            Member member = Member.builder()
+                    .email("member" + i + "@email.com")
+                    .password("password")
+                    .name("member" + i)
+                    .build();
+
+            memberRepository.save(member);
+        }
     }
 }

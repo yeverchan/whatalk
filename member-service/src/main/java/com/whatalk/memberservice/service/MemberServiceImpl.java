@@ -32,9 +32,20 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.save(member);
     }
 
+    @Override
+    public void changeName(String name, Member member) {
+        Member target = memberRepository.findById(member.getId())
+                .orElseThrow(
+                        ()-> new IllegalStateException("사용자 정보를 찾을 수 없습니다.")
+                );
+
+        member.setName(name);
+        memberRepository.save(target);
+    }
+
     private void checkDuplicateEmail(Member member) {
-        findByEmail(member.getEmail()).ifPresent(m -> {
-            throw new IllegalStateException();
+        memberRepository.findByEmail(member.getEmail()).ifPresent(m -> {
+            throw new IllegalStateException("이미 존재하는 이메일입니다.");
         });
     }
 }

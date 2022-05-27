@@ -11,4 +11,6 @@ public interface MemberService {
     List<Member> findAllByName(String name);
 
     Member create(Member member);
+
+    void changeName(String name, Member member);
 }

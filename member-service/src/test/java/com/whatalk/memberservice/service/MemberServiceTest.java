@@ -50,4 +50,21 @@ public class MemberServiceTest {
         memberService.create(member1);
         Assertions.assertThrows(IllegalStateException.class, () -> memberService.create(member2));
     }
+
+    @DisplayName("이름 변경 테스트")
+    @Test
+    void test_changeName(){
+        Member member = Member.builder()
+                .email("테스트@email.com")
+                .password("password")
+                .name("멤버")
+                .build();
+
+        memberService.create(member);
+
+        memberService.changeName("변경할 이름", member);
+
+        Member target = memberService.findByEmail(member.getEmail()).get();
+        assertThat(target.getName()).isEqualTo("변경할 이름");
+    }
 }

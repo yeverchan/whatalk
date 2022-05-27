@@ -64,7 +64,27 @@ public class MemberServiceTest {
 
         memberService.changeName("변경할 이름", member);
 
-        Member target = memberService.findByEmail(member.getEmail()).get();
-        assertThat(target.getName()).isEqualTo("변경할 이름");
+        assertThat(member.getName()).isEqualTo("변경할 이름");
+
+        //        List<String> name = memberService.findAllByName("변경할 이름").stream().map(Member::getName).collect(Collectors.toList());
+    }
+
+    @DisplayName("상태 메시지 변경 테스트")
+    @Test
+    void test_changeStatus(){
+        Member member = Member.builder()
+                .email("테스트@email.com")
+                .password("password")
+                .name("멤버")
+                .build();
+
+        memberService.create(member);
+
+        Assertions.assertNull(member.getStatus());
+
+        memberService.changeStatus("안녕하세요", member);
+
+        assertThat(member.getStatus()).isEqualTo("안녕하세요");
+
     }
 }

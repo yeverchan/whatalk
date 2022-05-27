@@ -13,4 +13,5 @@ public interface MemberService {
     Member create(Member member);
 
     void changeName(String name, Member member);
+    void changeStatus(String status, Member member);
 }

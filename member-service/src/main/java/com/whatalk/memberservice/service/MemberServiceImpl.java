@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +21,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<Member> findAllByName(String name) {
-        return memberRepository.findAllByName(name);
+    public List<MemberDTO> findAllByName(String name) {
+        return memberRepository.findAllByName(name).stream()
+                .map(member -> MemberDTO.builder()
+                        .id(member.getId())
+                        .name(member.getName())
+                        .status(member.getStatus())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override

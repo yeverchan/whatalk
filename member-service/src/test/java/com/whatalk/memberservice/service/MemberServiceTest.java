@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
@@ -86,5 +88,39 @@ public class MemberServiceTest {
 
         assertThat(member.getStatus()).isEqualTo("안녕하세요");
 
+    }
+
+    @DisplayName("같은 이름의 모든 멤버 검색 테스트")
+    @Test
+    void test_findAllByName(){
+        Member member1 = Member.builder()
+                .email("테스트1@email.com")
+                .password("password")
+                .name("멤버")
+                .build();
+        Member member2 = Member.builder()
+                .email("테스트2@email.com")
+                .password("password")
+                .name("멤버")
+                .build();
+        Member member3 = Member.builder()
+                .email("테스트3@email.com")
+                .password("password")
+                .name("멤버")
+                .build();
+        Member member4 = Member.builder()
+                .email("테스트4@email.com")
+                .password("password")
+                .name("유저")
+                .build();
+
+        memberService.create(member1);
+        memberService.create(member2);
+        memberService.create(member3);
+        memberService.create(member4);
+
+        List<MemberDTO> memberList = memberService.findAllByName("멤버");
+
+        assertThat(memberList.size()).isEqualTo(3);
     }
 }

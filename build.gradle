@@ -35,6 +35,7 @@ subprojects {
         annotationProcessor lombok
         testAnnotationProcessor lombok
 
+        implementation 'org.springframework.boot:spring-boot-starter-webflux'
         testImplementation "$boot:spring-boot-starter-test"
     }
 

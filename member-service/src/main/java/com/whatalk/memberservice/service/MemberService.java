@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface MemberService {
 
     Optional<Member> findByEmail(String email);
-    List<MemberDTO> findAllByName(String name);
+    List<Member> findAllByName(String name);
 
     Member create(Member member);
 

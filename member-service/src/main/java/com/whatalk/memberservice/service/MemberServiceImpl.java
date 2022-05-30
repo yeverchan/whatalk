@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,14 +20,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberDTO> findAllByName(String name) {
-        return memberRepository.findAllByName(name).stream()
-                .map(member -> MemberDTO.builder()
-                        .id(member.getId())
-                        .name(member.getName())
-                        .status(member.getStatus())
-                        .build())
-                .collect(Collectors.toList());
+    public List<Member> findAllByName(String name) {
+        return memberRepository.findAllByName(name);
     }
 
     @Override
@@ -41,7 +34,7 @@ public class MemberServiceImpl implements MemberService {
     public void changeName(String name, Member member) {
         Member target = getMember(member);
 
-        target.setName(name);
+        target.changeName(name);
 //      Dirty Checking,  memberRepository.save(target);
     }
 
@@ -49,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
     public void changeStatus(String status, Member member){
         Member target = getMember(member);
 
-        target.setStatus(status);
+        target.changeStatus(status);
     }
 
     private Member getMember(Member member) {

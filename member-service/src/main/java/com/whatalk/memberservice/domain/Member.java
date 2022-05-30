@@ -1,14 +1,11 @@
 package com.whatalk.memberservice.domain;
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,4 +29,12 @@ public class Member {
     private String status;
 
 //    private String profilePictureLink;
+
+    public void changeName(String name){
+        this.name = name;
+    }
+
+    public void changeStatus(String status){
+        this.status = status;
+    }
 }

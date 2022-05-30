@@ -1,13 +1,14 @@
-package com.whatalk.memberservice.service;
+package com.whatalk.memberservice.controller.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
-public class MemberDTO {
+public class MemberResponseDTO {
     private Long id;
     private String name;
     private String status;
     //    private String profilePictureLink;
+
 }

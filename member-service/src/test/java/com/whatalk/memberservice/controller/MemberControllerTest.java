@@ -1,7 +1,7 @@
 package com.whatalk.memberservice.controller;
 
+import com.whatalk.memberservice.controller.dto.MemberResponseDTO;
 import com.whatalk.memberservice.domain.Member;
-import com.whatalk.memberservice.service.MemberDTO;
 import com.whatalk.memberservice.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +14,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -64,11 +63,11 @@ class MemberControllerTest {
     @Test
     void test_findMembersByName() {
 
-        List<MemberDTO> result = client.get().uri("/members/멤버")
+        List<MemberResponseDTO> result = client.get().uri("/members/멤버")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(MemberDTO.class)
+                .expectBodyList(MemberResponseDTO.class)
                 .returnResult()
                 .getResponseBody();
 

@@ -119,7 +119,7 @@ public class MemberServiceTest {
         memberService.create(member3);
         memberService.create(member4);
 
-        List<MemberDTO> memberList = memberService.findAllByName("멤버");
+        List<Member> memberList = memberService.findAllByName("멤버");
 
         assertThat(memberList.size()).isEqualTo(3);
     }

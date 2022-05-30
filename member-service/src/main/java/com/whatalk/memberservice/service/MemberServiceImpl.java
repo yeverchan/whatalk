@@ -1,8 +1,10 @@
 package com.whatalk.memberservice.service;
 
 import com.whatalk.memberservice.domain.Member;
+import com.whatalk.memberservice.exception.MemberApiException;
 import com.whatalk.memberservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,13 +50,13 @@ public class MemberServiceImpl implements MemberService {
     private Member getMember(Member member) {
         return memberRepository.findById(member.getId())
                 .orElseThrow(
-                        () -> new IllegalStateException("사용자 정보를 찾을 수 없습니다.")
+                        () -> new MemberApiException(HttpStatus.NOT_FOUND,"사용자 정보를 찾을 수 없습니다.")
                 );
     }
 
     private void checkDuplicateEmail(Member member) {
         memberRepository.findByEmail(member.getEmail()).ifPresent(m -> {
-            throw new IllegalStateException("이미 존재하는 이메일입니다.");
+            throw new MemberApiException(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다.");
         });
     }
 }

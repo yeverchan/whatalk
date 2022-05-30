@@ -1,14 +1,19 @@
 package com.whatalk.memberservice.controller;
 
+import com.whatalk.memberservice.controller.dto.MemberCreateRequestDTO;
 import com.whatalk.memberservice.controller.dto.MemberResponseDTO;
 import com.whatalk.memberservice.domain.Member;
+import com.whatalk.memberservice.exception.ErrorResponse;
+import com.whatalk.memberservice.repository.MemberRepository;
 import com.whatalk.memberservice.service.MemberService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -26,8 +31,10 @@ class MemberControllerTest {
     MemberService memberService;
 
     @Autowired
-    WebTestClient client = WebTestClient.bindToController(new MemberController(memberService)).build();
+    MemberRepository memberRepository;
 
+    @Autowired
+    WebTestClient client = WebTestClient.bindToController(new MemberController(memberService)).build();
 
     @BeforeEach
     void initMembers() {
@@ -58,11 +65,14 @@ class MemberControllerTest {
         memberService.create(member4);
     }
 
+    @AfterEach
+    void clearMembers(){
+        memberRepository.deleteAll();
+    }
 
     @DisplayName("같은 이름 조회 api 테스트")
     @Test
     void test_findMembersByName() {
-
         List<MemberResponseDTO> result = client.get().uri("/members/멤버")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -73,5 +83,44 @@ class MemberControllerTest {
 
         assertThat(result.size()).isEqualTo(3);
 
+    }
+
+    @DisplayName("회원가입 성공 테스트")
+    @Test
+    void test_create_success() {
+        client.post().uri("/member")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(MemberCreateRequestDTO.builder()
+                        .email("회원가입@email.com")
+                        .password("password")
+                        .name("테스트")
+                        .build())
+                .exchange()
+                .expectStatus().isOk();
+//                .expectBody(ResultStatus.class)
+//                .returnResult()
+//                .getResponseBody();
+
+    }
+
+    @DisplayName("회원가입 실패(중복된 이메일) 테스트")
+    @Test
+    void test_create_fail() {
+        ErrorResponse response = client.post().uri("/member")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(MemberCreateRequestDTO.builder()
+                        .email("테스트1@email.com")
+                        .password("password")
+                        .name("테스트")
+                        .build())
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.CONFLICT)
+                .expectBody(ErrorResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(response.getMessage()).isEqualTo("이미 존재하는 이메일입니다.");
     }
 }

@@ -1,12 +1,13 @@
 package com.whatalk.memberservice.controller.dto;
 
 import com.whatalk.memberservice.domain.Member;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 
 @Getter
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class MemberCreateRequestDTO {
     private String email;
     private String password;

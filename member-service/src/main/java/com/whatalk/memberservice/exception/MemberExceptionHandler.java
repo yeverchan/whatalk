@@ -12,6 +12,7 @@ public class MemberExceptionHandler {
         return ResponseEntity.status(e.getHttpStatus())
                 .body(
                         ErrorResponse.builder()
+                                .code(e.getHttpStatus().value())
                                 .message(e.getMessage())
                                 .build()
                 );

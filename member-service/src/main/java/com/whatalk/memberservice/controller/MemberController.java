@@ -18,15 +18,19 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/member")
-    public ResponseEntity<Void> createMember(@RequestBody @Valid MemberCreateRequestDTO memberCreateRequestDTO) {
+    public ResponseEntity<ResultResponse> createMember(@RequestBody @Valid MemberCreateRequestDTO memberCreateRequestDTO) {
 
         memberService.create(memberCreateRequestDTO.toEntity());
-        // TODO: 2022/05/30 Result Status 클래스를 만들어 응답하기
-        return ResponseEntity.ok().build();
+
+        return ResponseEntity.ok().body(
+                ResultResponse.builder()
+                        .status(ResultStatus.SUCCESS)
+                        .build()
+        );
     }
 
     @GetMapping("/members/{name}")
-    public List<MemberResponseDTO> findMembersByName(@PathVariable String name) {
+    public List<MemberResponseDTO> getMembersByName(@PathVariable String name) {
 
         return memberService.findAllByName(name).stream()
                 .map(member -> MemberResponseDTO.builder()

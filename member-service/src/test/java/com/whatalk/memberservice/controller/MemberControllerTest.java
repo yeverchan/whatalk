@@ -72,7 +72,7 @@ class MemberControllerTest {
 
     @DisplayName("같은 이름 조회 api 테스트")
     @Test
-    void test_findMembersByName() {
+    void test_getMembersByName() {
         List<MemberResponseDTO> result = client.get().uri("/members/멤버")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -88,7 +88,7 @@ class MemberControllerTest {
     @DisplayName("회원가입 성공 테스트")
     @Test
     void test_create_success() {
-        client.post().uri("/member")
+        ResultResponse response = client.post().uri("/member")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(MemberCreateRequestDTO.builder()
@@ -97,11 +97,12 @@ class MemberControllerTest {
                         .name("테스트")
                         .build())
                 .exchange()
-                .expectStatus().isOk();
-//                .expectBody(ResultStatus.class)
-//                .returnResult()
-//                .getResponseBody();
+                .expectStatus().isOk()
+                .expectBody(ResultResponse.class)
+                .returnResult()
+                .getResponseBody();
 
+        assertThat(response.getStatus()).isEqualTo(ResultStatus.SUCCESS);
     }
 
     @DisplayName("회원가입 실패(중복된 이메일) 테스트")
@@ -122,5 +123,6 @@ class MemberControllerTest {
                 .getResponseBody();
 
         assertThat(response.getMessage()).isEqualTo("이미 존재하는 이메일입니다.");
+
     }
 }

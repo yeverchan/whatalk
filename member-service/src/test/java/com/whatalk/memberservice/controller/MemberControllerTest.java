@@ -1,7 +1,7 @@
 package com.whatalk.memberservice.controller;
 
 import com.whatalk.memberservice.controller.dto.MemberCreateRequestDTO;
-import com.whatalk.memberservice.controller.dto.MemberResponseDTO;
+import com.whatalk.memberservice.controller.dto.MembersDTO;
 import com.whatalk.memberservice.domain.Member;
 import com.whatalk.memberservice.exception.ErrorResponse;
 import com.whatalk.memberservice.repository.MemberRepository;
@@ -16,8 +16,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -73,15 +71,15 @@ class MemberControllerTest {
     @DisplayName("같은 이름 조회 api 테스트")
     @Test
     void test_getMembersByName() {
-        List<MemberResponseDTO> result = client.get().uri("/members/멤버")
+        MembersDTO result = client.get().uri("/members/멤버")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(MemberResponseDTO.class)
+                .expectBody(MembersDTO.class)
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(result.size()).isEqualTo(3);
+        assertThat(result.getMembers().size()).isEqualTo(3);
 
     }
 

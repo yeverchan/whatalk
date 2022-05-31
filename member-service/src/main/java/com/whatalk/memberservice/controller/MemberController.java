@@ -2,13 +2,13 @@ package com.whatalk.memberservice.controller;
 
 import com.whatalk.memberservice.controller.dto.MemberCreateRequestDTO;
 import com.whatalk.memberservice.controller.dto.MemberResponseDTO;
+import com.whatalk.memberservice.controller.dto.MembersDTO;
 import com.whatalk.memberservice.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -30,14 +30,15 @@ public class MemberController {
     }
 
     @GetMapping("/members/{name}")
-    public List<MemberResponseDTO> getMembersByName(@PathVariable String name) {
+    public MembersDTO getMembersByName(@PathVariable String name) {
 
-        return memberService.findAllByName(name).stream()
-                .map(member -> MemberResponseDTO.builder()
-                        .id(member.getId())
-                        .name(member.getEmail())
-                        .status(member.getStatus())
-                        .build())
-                .collect(Collectors.toList());
+        return MembersDTO.builder().members(memberService.findAllByName(name).stream()
+                        .map(member -> MemberResponseDTO.builder()
+                                .id(member.getId())
+                                .name(member.getEmail())
+                                .status(member.getStatus())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
     }
 }

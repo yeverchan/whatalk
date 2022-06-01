@@ -1,0 +1,3 @@
+dependencies {
+    implementation("$cloud:spring-cloud-starter-netflix-eureka-server")
+}

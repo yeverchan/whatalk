@@ -1,6 +1,7 @@
 
 server:
-  port: 0
+#  port: 0
+  port: 8091
 
 spring:
   application:

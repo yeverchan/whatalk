@@ -4,6 +4,8 @@ buildscript {
         boot = "org.springframework.boot"
         bootVersion = "2.7.0"
         lombok = "org.projectlombok:lombok"
+        cloud = "org.springframework.cloud"
+        cloudVersion = "2021.0.3"
     }
     repositories {
         mavenCentral()
@@ -29,6 +31,10 @@ subprojects {
         mavenCentral()
     }
 
+    configurations {
+        exclude
+    }
+
     dependencies {
         compileOnly lombok
         testCompileOnly lombok
@@ -41,12 +47,22 @@ subprojects {
         testImplementation "$boot:spring-boot-starter-test"
     }
 
+    dependencyManagement{
+        imports {
+            mavenBom "$cloud:spring-cloud-dependencies:$cloudVersion"
+        }
+    }
+
     test {
         useJUnitPlatform()
     }
 }
 
 project(':member-service') {
-    bootJar.enabled(false)
-    jar.enabled(true)
+}
+
+project(':gateway-service') {
+}
+
+project(':eureka') {
 }

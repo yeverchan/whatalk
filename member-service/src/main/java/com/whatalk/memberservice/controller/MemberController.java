@@ -12,12 +12,13 @@ import javax.validation.Valid;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/member")
+    @PostMapping
     public ResponseEntity<ResultResponse> createMember(@RequestBody @Valid MemberCreateRequestDTO memberCreateRequestDTO) {
 
         memberService.create(memberCreateRequestDTO.toEntity());
@@ -29,7 +30,7 @@ public class MemberController {
         );
     }
 
-    @GetMapping("/members/{name}")
+    @GetMapping("/{name}")
     public MembersDTO getMembersByName(@PathVariable String name) {
 
         return MembersDTO.builder().members(memberService.findAllByName(name).stream()

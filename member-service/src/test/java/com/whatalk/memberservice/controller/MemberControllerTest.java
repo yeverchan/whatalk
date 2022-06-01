@@ -86,7 +86,7 @@ class MemberControllerTest {
     @DisplayName("회원가입 성공 테스트")
     @Test
     void test_create_success() {
-        ResultResponse response = client.post().uri("/member")
+        ResultResponse response = client.post().uri("/members")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(MemberCreateRequestDTO.builder()
@@ -106,7 +106,7 @@ class MemberControllerTest {
     @DisplayName("회원가입 실패(중복된 이메일) 테스트")
     @Test
     void test_create_fail() {
-        ErrorResponse response = client.post().uri("/member")
+        ErrorResponse response = client.post().uri("/members")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(MemberCreateRequestDTO.builder()

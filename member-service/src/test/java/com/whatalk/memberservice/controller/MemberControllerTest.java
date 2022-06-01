@@ -95,7 +95,7 @@ class MemberControllerTest {
                         .name("테스트")
                         .build())
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus().isCreated()
                 .expectBody(ResultResponse.class)
                 .returnResult()
                 .getResponseBody();

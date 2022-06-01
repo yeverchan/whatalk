@@ -5,6 +5,7 @@ import com.whatalk.memberservice.controller.dto.MemberResponseDTO;
 import com.whatalk.memberservice.controller.dto.MembersDTO;
 import com.whatalk.memberservice.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class MemberController {
 
         memberService.create(memberCreateRequestDTO.toEntity());
 
-        return ResponseEntity.ok().body(
+        return ResponseEntity.status(HttpStatus.CREATED).body(
                 ResultResponse.builder()
                         .status(ResultStatus.SUCCESS)
                         .build()

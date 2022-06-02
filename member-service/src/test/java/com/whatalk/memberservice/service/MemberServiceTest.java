@@ -68,11 +68,22 @@ public class MemberServiceTest {
 
         memberService.create(member);
 
-        memberService.changeName("변경할 이름", member);
+        memberService.changeName("변경할 이름", member.getId());
 
         assertThat(member.getName()).isEqualTo("변경할 이름");
 
-        //        List<String> name = memberService.findAllByName("변경할 이름").stream().map(Member::getName).collect(Collectors.toList());
+    }
+
+    @DisplayName("이름 변경 실패(존재하지 않는 멤버) 테스트")
+    @Test
+    void test_changeName_failure(){
+
+        RuntimeException exception = assertThrows(
+                MemberApiException.class,
+                ()-> memberService.changeName("변경할 이름", 9L)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("사용자 정보를 찾을 수 없습니다.");
     }
 
     @DisplayName("상태 메시지 변경 테스트")
@@ -88,10 +99,22 @@ public class MemberServiceTest {
 
         Assertions.assertNull(member.getStatus());
 
-        memberService.changeStatus("안녕하세요", member);
+        memberService.changeStatus("안녕하세요", member.getId());
 
         assertThat(member.getStatus()).isEqualTo("안녕하세요");
 
+    }
+
+    @DisplayName("상태 메시지 변경 실패(존재하지 않는 멤버) 테스트")
+    @Test
+    void test_changeStatus_failure(){
+
+        RuntimeException exception = assertThrows(
+                MemberApiException.class,
+                ()-> memberService.changeStatus("안녕하세요", 9L)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("사용자 정보를 찾을 수 없습니다.");
     }
 
     @DisplayName("같은 이름의 모든 멤버 검색 테스트")

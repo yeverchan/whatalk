@@ -28,34 +28,34 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member create(Member member) {
-        checkDuplicateEmail(member);
+        checkDuplicateEmail(member.getEmail());
         return memberRepository.save(member);
     }
 
     @Override
-    public void changeName(String name, Member member) {
-        Member target = getMember(member);
+    public void changeName(String name, Long id) {
+        Member target = getMember(id);
 
         target.changeName(name);
 //      Dirty Checking,  memberRepository.save(target);
     }
 
     @Override
-    public void changeStatus(String status, Member member){
-        Member target = getMember(member);
+    public void changeStatus(String status, Long id) {
+        Member target = getMember(id);
 
         target.changeStatus(status);
     }
 
-    private Member getMember(Member member) {
-        return memberRepository.findById(member.getId())
+    private Member getMember(Long id) {
+        return memberRepository.findById(id)
                 .orElseThrow(
-                        () -> new MemberApiException(HttpStatus.NOT_FOUND,"사용자 정보를 찾을 수 없습니다.")
+                        () -> new MemberApiException(HttpStatus.NOT_FOUND, "사용자 정보를 찾을 수 없습니다.")
                 );
     }
 
-    private void checkDuplicateEmail(Member member) {
-        memberRepository.findByEmail(member.getEmail()).ifPresent(m -> {
+    private void checkDuplicateEmail(String email) {
+        memberRepository.findByEmail(email).ifPresent(m -> {
             throw new MemberApiException(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다.");
         });
     }

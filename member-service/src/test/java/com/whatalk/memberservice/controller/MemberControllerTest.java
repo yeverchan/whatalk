@@ -105,7 +105,7 @@ class MemberControllerTest {
 
     @DisplayName("회원가입 실패(중복된 이메일) 테스트")
     @Test
-    void test_create_fail() {
+    void test_create_failure() {
         ErrorResponse response = client.post().uri("/members")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)

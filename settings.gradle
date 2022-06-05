@@ -3,4 +3,5 @@ rootProject.name = 'whatalk'
 include 'member-service'
 include 'gateway-service'
 include 'eureka'
+include 'chat-service'
 

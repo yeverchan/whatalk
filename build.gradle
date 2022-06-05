@@ -66,3 +66,6 @@ project(':gateway-service') {
 
 project(':eureka') {
 }
+
+project(':chat-service') {
+}

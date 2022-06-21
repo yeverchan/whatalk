@@ -1,15 +1,8 @@
 package com.whatalk.memberservice.controller;
 
-import lombok.Getter;
+public interface ResultStatus {
 
-@Getter
-public enum ResultStatus {
+    String SUCCESS = "success";
+    String FAIL = "FAIL";
 
-    SUCCESS
-
-//    private int i;
-//
-//    ResultStatus(int i) {
-//        this.i = i;
-//    }
 }

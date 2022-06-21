@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ResultResponse {
 
-    private ResultStatus status;
+    private String status;
 
 }

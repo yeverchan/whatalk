@@ -1,11 +1,12 @@
 package com.whatalk.memberservice.service;
 
 import com.whatalk.memberservice.domain.Member;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberService {
+public interface MemberService extends UserDetailsService {
 
     Optional<Member> findByEmail(String email);
     List<Member> findAllByName(String name);

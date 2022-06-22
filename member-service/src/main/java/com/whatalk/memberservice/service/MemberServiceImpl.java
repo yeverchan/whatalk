@@ -4,9 +4,15 @@ import com.whatalk.memberservice.domain.Member;
 import com.whatalk.memberservice.exception.MemberApiException;
 import com.whatalk.memberservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +35,14 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member create(Member member) {
         checkDuplicateEmail(member.getEmail());
-        return memberRepository.save(member);
+
+        return memberRepository.save(
+                Member.builder()
+                .email(member.getEmail())
+                .password(passwordEncoder().encode(member.getPassword()))
+                .name(member.getName())
+                .build()
+        );
     }
 
     @Override
@@ -58,5 +71,20 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.findByEmail(email).ifPresent(m -> {
             throw new MemberApiException(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다.");
         });
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("존재하지 않는 사용자입니다.")
+        );
+
+        return new User(member.getEmail(), member.getPassword(), new ArrayList<>());
+    }
+
+    @Bean
+    private BCryptPasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }

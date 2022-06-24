@@ -4,7 +4,6 @@ import com.whatalk.memberservice.domain.Member;
 import com.whatalk.memberservice.exception.MemberApiException;
 import com.whatalk.memberservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +21,8 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
+    private final BCryptPasswordEncoder passwordEncoder;
+
     @Override
     public Optional<Member> findByEmail(String email) {
         return memberRepository.findByEmail(email);
@@ -38,10 +39,10 @@ public class MemberServiceImpl implements MemberService {
 
         return memberRepository.save(
                 Member.builder()
-                .email(member.getEmail())
-                .password(passwordEncoder().encode(member.getPassword()))
-                .name(member.getName())
-                .build()
+                        .email(member.getEmail())
+                        .password(passwordEncoder.encode(member.getPassword()))
+                        .name(member.getName())
+                        .build()
         );
     }
 
@@ -50,7 +51,6 @@ public class MemberServiceImpl implements MemberService {
         Member target = getMember(id);
 
         target.changeName(name);
-//      Dirty Checking,  memberRepository.save(target);
     }
 
     @Override
@@ -76,15 +76,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        Member member = memberRepository.findByEmail(email).orElseThrow(
-                () -> new UsernameNotFoundException("존재하지 않는 사용자입니다.")
-        );
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(
+                        () -> new UsernameNotFoundException("존재하지 않는 사용자입니다.")
+                );
 
         return new User(member.getEmail(), member.getPassword(), new ArrayList<>());
-    }
-
-    @Bean
-    private BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
     }
 }

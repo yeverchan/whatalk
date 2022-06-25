@@ -1,6 +1,7 @@
 package com.whatalk.memberservice.controller;
 
 import com.whatalk.memberservice.controller.dto.MemberCreateRequestDto;
+import com.whatalk.memberservice.controller.dto.MemberLoginRequestDto;
 import com.whatalk.memberservice.controller.dto.MembersDto;
 import com.whatalk.memberservice.domain.Member;
 import com.whatalk.memberservice.exception.ErrorResponse;
@@ -64,7 +65,7 @@ class MemberControllerTest {
     }
 
     @AfterEach
-    void clearMembers(){
+    void clearMembers() {
         memberRepository.deleteAll();
     }
 
@@ -121,6 +122,29 @@ class MemberControllerTest {
                 .getResponseBody();
 
         assertThat(response.getMessage()).isEqualTo("이미 존재하는 이메일입니다.");
+    }
 
+    @DisplayName("토큰 발급 테스트")
+    @Test
+    void test_token() {
+        Member member = Member.builder()
+                .email("테스트@email.com")
+                .password("password")
+                .name("멤버")
+                .build();
+
+        memberService.create(member);
+
+        MemberLoginRequestDto requestLogin = new MemberLoginRequestDto();
+        requestLogin.setEmail("테스트@email.com");
+        requestLogin.setPassword("password");
+
+
+        client.post().uri("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(requestLogin)
+                .exchange()
+                .expectHeader()
+                .exists("Authorization");
     }
 }

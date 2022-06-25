@@ -8,7 +8,8 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class MemberCreateRequestDTO {
+public class MemberCreateRequestDto {
+
     private String email;
     private String password;
     private String name;

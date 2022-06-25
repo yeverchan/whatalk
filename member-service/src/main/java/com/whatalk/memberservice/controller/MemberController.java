@@ -1,8 +1,8 @@
 package com.whatalk.memberservice.controller;
 
-import com.whatalk.memberservice.controller.dto.MemberCreateRequestDTO;
-import com.whatalk.memberservice.controller.dto.MemberResponseDTO;
-import com.whatalk.memberservice.controller.dto.MembersDTO;
+import com.whatalk.memberservice.controller.dto.MemberCreateRequestDto;
+import com.whatalk.memberservice.controller.dto.MemberResponseDto;
+import com.whatalk.memberservice.controller.dto.MembersDto;
 import com.whatalk.memberservice.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<ResultResponse> createMember(@RequestBody @Valid MemberCreateRequestDTO memberCreateRequestDTO) {
+    public ResponseEntity<ResultResponse> createMember(@RequestBody @Valid MemberCreateRequestDto memberCreateRequestDTO) {
 
         memberService.create(memberCreateRequestDTO.toEntity());
 
@@ -32,10 +32,10 @@ public class MemberController {
     }
 
     @GetMapping("/{name}")
-    public MembersDTO getMembersByName(@PathVariable String name) {
+    public MembersDto getMembersByName(@PathVariable String name) {
 
-        return MembersDTO.builder().members(memberService.findAllByName(name).stream()
-                        .map(member -> MemberResponseDTO.builder()
+        return MembersDto.builder().members(memberService.findAllByName(name).stream()
+                        .map(member -> MemberResponseDto.builder()
                                 .id(member.getId())
                                 .name(member.getEmail())
                                 .status(member.getStatus())

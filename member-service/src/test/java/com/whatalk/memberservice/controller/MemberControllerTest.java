@@ -1,7 +1,7 @@
 package com.whatalk.memberservice.controller;
 
-import com.whatalk.memberservice.controller.dto.MemberCreateRequestDTO;
-import com.whatalk.memberservice.controller.dto.MembersDTO;
+import com.whatalk.memberservice.controller.dto.MemberCreateRequestDto;
+import com.whatalk.memberservice.controller.dto.MembersDto;
 import com.whatalk.memberservice.domain.Member;
 import com.whatalk.memberservice.exception.ErrorResponse;
 import com.whatalk.memberservice.repository.MemberRepository;
@@ -71,11 +71,11 @@ class MemberControllerTest {
     @DisplayName("같은 이름 조회 api 테스트")
     @Test
     void test_getMembersByName() {
-        MembersDTO result = client.get().uri("/members/멤버")
+        MembersDto result = client.get().uri("/members/멤버")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(MembersDTO.class)
+                .expectBody(MembersDto.class)
                 .returnResult()
                 .getResponseBody();
 
@@ -89,7 +89,7 @@ class MemberControllerTest {
         ResultResponse response = client.post().uri("/members")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(MemberCreateRequestDTO.builder()
+                .bodyValue(MemberCreateRequestDto.builder()
                         .email("회원가입@email.com")
                         .password("password")
                         .name("테스트")
@@ -109,7 +109,7 @@ class MemberControllerTest {
         ErrorResponse response = client.post().uri("/members")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(MemberCreateRequestDTO.builder()
+                .bodyValue(MemberCreateRequestDto.builder()
                         .email("테스트1@email.com")
                         .password("password")
                         .name("테스트")

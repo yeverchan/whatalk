@@ -3,11 +3,14 @@ package com.whatalk.memberservice.auth.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.whatalk.memberservice.domain.Member;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.whatalk.memberservice.auth.Jwt;
+import com.whatalk.memberservice.controller.dto.MemberLoginRequestDto;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
 import javax.servlet.FilterChain;
@@ -25,14 +28,16 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+
         if (!request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("잘못된 요청입니다.");
         }
+
         try {
 
-            Member member = new ObjectMapper().readValue(request.getInputStream(), Member.class);
+            MemberLoginRequestDto loginMember = new ObjectMapper().readValue(request.getInputStream(), MemberLoginRequestDto.class);
 
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword());
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginMember.getEmail(), loginMember.getPassword());
 
             return getAuthenticationManager().authenticate(token);
 
@@ -43,12 +48,41 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+
         String token = JWT.create()
-                .withSubject((String) authResult.getCredentials())
-                // TODO: 2022/06/23 property 생성
-                .withExpiresAt(new Date(System.currentTimeMillis() + Environment))
-                .sign(Algorithm.HMAC256(Environment));
+                .withSubject(
+                        (String) authResult.getPrincipal()
+                )
+                .withExpiresAt(
+                        new Date(System.currentTimeMillis() + Jwt.EXP)
+                )
+                .sign(
+                        Algorithm.HMAC256(Jwt.SECRET)
+                );
 
         response.addHeader("Authorization", "Bearer " + token);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+
+        // TODO: 2022/06/25 refactor
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        ObjectNode content = mapper.createObjectNode();
+
+        content.put("code", HttpServletResponse.SC_UNAUTHORIZED);
+        content.put("message", failed.getMessage());
+
+        String body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(content);
+
+        response
+                .getWriter()
+                .printf(body)
+                .flush();
     }
 }

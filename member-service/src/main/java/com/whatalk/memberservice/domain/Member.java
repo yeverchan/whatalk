@@ -1,7 +1,10 @@
 package com.whatalk.memberservice.domain;
 
 import com.sun.istack.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -28,7 +31,7 @@ public class Member {
 
     private String status;
 
-//    private String profilePictureLink;
+//    private String profileImageUrl;
 
     public void changeName(String name){
         this.name = name;

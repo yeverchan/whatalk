@@ -1,9 +1,12 @@
 dependencies {
-    implementation("$boot:spring-boot-starter-web")
-    implementation("$boot:spring-boot-starter-data-jpa")
-    implementation("$cloud:spring-cloud-starter-netflix-eureka-client")
+    implementation ("$boot:spring-boot-starter-web")
+    implementation ("$boot:spring-boot-starter-data-jpa")
     implementation ("$boot:spring-boot-starter-security")
+    annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
+    implementation ("$cloud:spring-cloud-starter-netflix-eureka-client")
+
     implementation group: 'com.auth0', name: 'java-jwt', version: '3.19.2'
+
 //    implementation 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
     testImplementation 'com.h2database:h2'

@@ -78,7 +78,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(
-                        () -> new UsernameNotFoundException("존재하지 않는 사용자입니다.")
+                        () -> new UsernameNotFoundException("사용자 정보가 존재하지 않거나 비밀번호가 틀립니다.")
                 );
 
         return new User(member.getEmail(), member.getPassword(), new ArrayList<>());

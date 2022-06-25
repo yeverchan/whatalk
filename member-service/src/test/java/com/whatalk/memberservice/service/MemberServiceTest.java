@@ -66,7 +66,7 @@ public class MemberServiceTest {
                 .name("멤버")
                 .build();
 
-        memberService.create(member);
+        member = memberService.create(member);
 
         memberService.changeName("변경할 이름", member.getId());
 
@@ -95,7 +95,7 @@ public class MemberServiceTest {
                 .name("멤버")
                 .build();
 
-        memberService.create(member);
+        member = memberService.create(member);
 
         Assertions.assertNull(member.getStatus());
 

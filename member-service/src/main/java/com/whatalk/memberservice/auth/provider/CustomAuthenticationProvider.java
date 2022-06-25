@@ -31,7 +31,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         UserDetails userDetails = memberService.loadUserByUsername(email);
 
         if(!passwordEncoder.matches(password, userDetails.getPassword())){
-            throw new BadCredentialsException("비밀번호가 다릅니다.");
+            throw new BadCredentialsException("사용자 정보가 존재하지 않거나 비밀번호가 틀립니다.");
         }
 
         return new UsernamePasswordAuthenticationToken(email, password, new ArrayList<>());

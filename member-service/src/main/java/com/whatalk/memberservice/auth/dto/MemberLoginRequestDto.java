@@ -1,4 +1,4 @@
-package com.whatalk.memberservice.controller.dto;
+package com.whatalk.memberservice.auth.dto;
 
 import lombok.Data;
 

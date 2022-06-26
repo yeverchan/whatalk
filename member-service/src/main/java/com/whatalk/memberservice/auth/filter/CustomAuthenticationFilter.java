@@ -5,7 +5,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.whatalk.memberservice.auth.Jwt;
-import com.whatalk.memberservice.controller.dto.MemberLoginRequestDto;
+import com.whatalk.memberservice.auth.dto.MemberLoginRequestDto;
+import com.whatalk.memberservice.exception.ErrorResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -73,12 +74,12 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
 
         ObjectMapper mapper = new ObjectMapper();
 
-        ObjectNode content = mapper.createObjectNode();
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(HttpServletResponse.SC_UNAUTHORIZED)
+                .message(failed.getMessage())
+                .build();
 
-        content.put("code", HttpServletResponse.SC_UNAUTHORIZED);
-        content.put("message", failed.getMessage());
-
-        String body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(content);
+        String body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(errorResponse);
 
         response
                 .getWriter()

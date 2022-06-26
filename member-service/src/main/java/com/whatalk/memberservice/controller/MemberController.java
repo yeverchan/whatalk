@@ -1,12 +1,15 @@
 package com.whatalk.memberservice.controller;
 
+import com.auth0.jwt.interfaces.Claim;
 import com.whatalk.memberservice.controller.dto.MemberCreateRequestDto;
 import com.whatalk.memberservice.controller.dto.MemberResponseDto;
 import com.whatalk.memberservice.controller.dto.MembersDto;
+import com.whatalk.memberservice.controller.dto.ResponseResult;
 import com.whatalk.memberservice.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,13 +23,13 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<ResultResponse> createMember(@RequestBody @Valid MemberCreateRequestDto memberCreateRequestDTO) {
+    public ResponseEntity<ResponseResult> createMember(@RequestBody @Valid MemberCreateRequestDto memberCreateRequestDTO) {
 
         memberService.create(memberCreateRequestDTO.toEntity());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                ResultResponse.builder()
-                        .status(ResultStatus.SUCCESS)
+                ResponseResult.builder()
+                        .success(true)
                         .build()
         );
     }
@@ -43,4 +46,10 @@ public class MemberController {
                         .collect(Collectors.toList()))
                 .build();
     }
+//
+//    @GetMapping
+//    public String test(Authentication authentication){
+//
+//    }
+
 }

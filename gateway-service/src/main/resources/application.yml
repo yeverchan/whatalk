@@ -11,16 +11,31 @@ spring:
       httpclient:
         connect-timeout: 1000
         response-timeout: 5s
-#        lb, health-check
       routes:
+        - id: login
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/login
+            - Method=POST
+
+        - id: join
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/members
+            - Method=POST
+
         - id: member-serivce
           uri: lb://MEMBER-SERVICE
           predicates:
             - Path=/members/**
+          filters:
+            - CustomAuthHeaderFilter
+
         - id: chat-service
           uri: lb://CHAT-SERVICE
           predicates:
-            - Path=/test/**
+            - Path=/chat/**
+
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.cloud.client.hostname}:${random.value}

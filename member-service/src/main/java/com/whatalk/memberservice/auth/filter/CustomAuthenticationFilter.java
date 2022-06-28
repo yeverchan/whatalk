@@ -3,7 +3,6 @@ package com.whatalk.memberservice.auth.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.whatalk.memberservice.auth.Jwt;
 import com.whatalk.memberservice.auth.dto.MemberLoginRequestDto;
 import com.whatalk.memberservice.exception.ErrorResponse;

@@ -10,7 +10,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,13 +28,13 @@ public class CustomAuthHeaderFilter extends AbstractGatewayFilterFactory<CustomA
         return (exchange, chain) -> {
 
             ServerHttpRequest request = exchange.getRequest();
-            ServerHttpResponse response = exchange.getResponse();
+            HttpHeaders reqHeaders= request.getHeaders();
 
-            if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+            if (!reqHeaders.containsKey(HttpHeaders.AUTHORIZATION) || !reqHeaders.containsKey("Email") ) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다.");
             }
 
-            String jwtHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+            String jwtHeader = reqHeaders.get(HttpHeaders.AUTHORIZATION).get(0);
 
             if (!jwtHeader.startsWith("Bearer ")) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 토큰 형식입니다.");
@@ -48,12 +47,11 @@ public class CustomAuthHeaderFilter extends AbstractGatewayFilterFactory<CustomA
                 DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(environment.getProperty("jwt.SECRET"))).build().verify(jwt);
 
                 String email = decodedJWT.getSubject();
+                String targetEmail = reqHeaders.get("Email").get(0);
 
-                if(email == null){
+                if(email == null || !targetEmail.equals(email)){
                     throw new JWTVerificationException("");
                 }
-
-                response.getHeaders().set("email", email);
 
             } catch (JWTVerificationException e) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");

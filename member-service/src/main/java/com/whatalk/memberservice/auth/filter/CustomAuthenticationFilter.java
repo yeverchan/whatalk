@@ -64,6 +64,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
                 );
 
         response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader("Email", (String) authResult.getPrincipal());
     }
 
     @Override

@@ -3,9 +3,9 @@ package com.whatalk.memberservice.auth.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.whatalk.memberservice.auth.Jwt;
 import com.whatalk.memberservice.auth.dto.MemberLoginRequestDto;
 import com.whatalk.memberservice.exception.ErrorResponse;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,8 +22,11 @@ import java.util.Date;
 
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    public CustomAuthenticationFilter(String defaultFilterProcessesUrl, AuthenticationManager authenticationManager) {
+    private final Environment environment;
+
+    public CustomAuthenticationFilter(String defaultFilterProcessesUrl, AuthenticationManager authenticationManager, Environment environment) {
         super(defaultFilterProcessesUrl, authenticationManager);
+        this.environment = environment;
     }
 
     @Override
@@ -54,10 +57,10 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
                         (String) authResult.getPrincipal()
                 )
                 .withExpiresAt(
-                        new Date(System.currentTimeMillis() + Jwt.EXP)
+                        new Date(System.currentTimeMillis() + Long.parseLong(environment.getProperty("jwt.EXP")))
                 )
                 .sign(
-                        Algorithm.HMAC256(Jwt.SECRET)
+                        Algorithm.HMAC256(environment.getProperty("jwt.SECRET"))
                 );
 
         response.addHeader("Authorization", "Bearer " + token);

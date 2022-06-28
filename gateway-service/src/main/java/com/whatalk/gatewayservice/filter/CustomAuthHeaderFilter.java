@@ -6,6 +6,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -16,8 +17,11 @@ import org.springframework.web.server.ResponseStatusException;
 @Component
 public class CustomAuthHeaderFilter extends AbstractGatewayFilterFactory<CustomAuthHeaderFilter.Config> {
 
-    public CustomAuthHeaderFilter() {
+    private final Environment environment;
+
+    public CustomAuthHeaderFilter(Environment environment) {
         super(Config.class);
+        this.environment = environment;
     }
 
     @Override
@@ -41,9 +45,13 @@ public class CustomAuthHeaderFilter extends AbstractGatewayFilterFactory<CustomA
 
             try {
 
-                DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(Jwt.SECRET)).build().verify(jwt);
+                DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(environment.getProperty("jwt.SECRET"))).build().verify(jwt);
 
                 String email = decodedJWT.getSubject();
+
+                if(email == null){
+                    throw new JWTVerificationException("");
+                }
 
                 response.getHeaders().set("email", email);
 

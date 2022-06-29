@@ -9,11 +9,11 @@ public class MemberExceptionHandler {
 
     @ExceptionHandler(MemberApiException.class)
     public ResponseEntity<ErrorResponse> handleApiException(MemberApiException e) {
-        return ResponseEntity.status(e.getHttpStatus())
+        return ResponseEntity.status(e.getExceptionHttpStatus().getValue())
                 .body(
                         ErrorResponse.builder()
-                                .code(e.getHttpStatus().value())
-                                .message(e.getMessage())
+                                .code(e.getExceptionHttpStatus().getValue())
+                                .message(e.getExceptionHttpStatus().getMessage())
                                 .build()
                 );
     }

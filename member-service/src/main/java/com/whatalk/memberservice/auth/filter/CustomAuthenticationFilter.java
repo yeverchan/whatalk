@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.whatalk.memberservice.auth.dto.MemberLoginRequestDto;
+import com.whatalk.memberservice.auth.exception.AuthStatus;
 import com.whatalk.memberservice.exception.ErrorResponse;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +34,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
         if (!request.getMethod().equals("POST")) {
-            throw new AuthenticationServiceException("잘못된 요청입니다.");
+            throw new AuthenticationServiceException(AuthStatus.NOT_SUPPORTED_METHOD.getMessage());
         }
 
         try {
@@ -45,7 +46,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
             return getAuthenticationManager().authenticate(token);
 
         } catch (IOException e) {
-            throw new AuthenticationServiceException("잘못된 입력입니다.");
+            throw new AuthenticationServiceException(AuthStatus.BAD_REQUEST.getMessage());
         }
     }
 

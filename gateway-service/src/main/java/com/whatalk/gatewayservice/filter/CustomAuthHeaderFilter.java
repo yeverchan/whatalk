@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.whatalk.gatewayservice.exception.ErrorMessage;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.env.Environment;
@@ -31,13 +32,13 @@ public class CustomAuthHeaderFilter extends AbstractGatewayFilterFactory<CustomA
             HttpHeaders reqHeaders= request.getHeaders();
 
             if (!reqHeaders.containsKey(HttpHeaders.AUTHORIZATION) || !reqHeaders.containsKey("Email") ) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다.");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.NOT_EXIST_AUTH_HEADER);
             }
 
             String jwtHeader = reqHeaders.get(HttpHeaders.AUTHORIZATION).get(0);
 
             if (!jwtHeader.startsWith("Bearer ")) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 토큰 형식입니다.");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_FORMAT_TOKEN);
             }
 
             String jwt = jwtHeader.replace("Bearer ", "");
@@ -49,12 +50,12 @@ public class CustomAuthHeaderFilter extends AbstractGatewayFilterFactory<CustomA
                 String email = decodedJWT.getSubject();
                 String targetEmail = reqHeaders.get("Email").get(0);
 
-                if(email == null || !targetEmail.equals(email)){
+                if(!targetEmail.equals(email)){
                     throw new JWTVerificationException("");
                 }
 
             } catch (JWTVerificationException e) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN);
             }
 
             return chain.filter(exchange);

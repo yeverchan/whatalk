@@ -1,10 +1,11 @@
 package com.whatalk.memberservice.service;
 
+import com.whatalk.memberservice.auth.exception.AuthStatus;
 import com.whatalk.memberservice.domain.Member;
+import com.whatalk.memberservice.exception.ExceptionHttpStatus;
 import com.whatalk.memberservice.exception.MemberApiException;
 import com.whatalk.memberservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +24,19 @@ public class MemberServiceImpl implements MemberService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public Optional<Member> findByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(
+                        () -> new MemberApiException(ExceptionHttpStatus.MEMBER_NOT_FOUND)
+                );
+    }
+
+    @Override
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(
+                        () -> new MemberApiException(ExceptionHttpStatus.MEMBER_NOT_FOUND)
+                );
     }
 
     @Override
@@ -46,31 +57,37 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
+    // TODO: 2022/06/29
     @Override
-    public void changeName(String name, Long id) {
-        Member target = getMember(id);
+    public Member changeName(String name, Long id) {
+        Member target = findById(id);
 
         target.changeName(name);
+
+        return target;
     }
 
+    // TODO: 2022/06/29
     @Override
-    public void changeStatus(String status, Long id) {
-        Member target = getMember(id);
+    public Member changeStatus(String status, Long id) {
+        Member target = findById(id);
 
         target.changeStatus(status);
+
+        return target;
     }
 
-    private Member getMember(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(
-                        () -> new MemberApiException(HttpStatus.NOT_FOUND, "사용자 정보를 찾을 수 없습니다.")
-                );
-    }
 
     private void checkDuplicateEmail(String email) {
         memberRepository.findByEmail(email).ifPresent(m -> {
-            throw new MemberApiException(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다.");
+            throw new MemberApiException(ExceptionHttpStatus.EMAIL_CONFLICT);
         });
+    }
+
+    private void checkExistsMember(String email) {
+        if(memberRepository.existsMemberByEmail(email)){
+            throw new MemberApiException(ExceptionHttpStatus.MEMBER_NOT_FOUND);
+        }
     }
 
     @Override
@@ -78,7 +95,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(
-                        () -> new UsernameNotFoundException("사용자 정보가 존재하지 않거나 비밀번호가 틀립니다.")
+                        () -> new UsernameNotFoundException(AuthStatus.BAD_CREDENTIALS.getMessage())
                 );
 
         return new User(member.getEmail(), member.getPassword(), new ArrayList<>());

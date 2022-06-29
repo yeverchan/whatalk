@@ -1,5 +1,6 @@
 package com.whatalk.memberservice.auth.provider;
 
+import com.whatalk.memberservice.auth.exception.AuthStatus;
 import com.whatalk.memberservice.service.MemberService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,7 +32,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         UserDetails userDetails = memberService.loadUserByUsername(email);
 
         if(!passwordEncoder.matches(password, userDetails.getPassword())){
-            throw new BadCredentialsException("사용자 정보가 존재하지 않거나 비밀번호가 틀립니다.");
+            throw new BadCredentialsException(AuthStatus.BAD_CREDENTIALS.getMessage());
         }
 
         return new UsernamePasswordAuthenticationToken(email, password, new ArrayList<>());

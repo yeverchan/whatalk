@@ -1,14 +1,16 @@
 package com.whatalk.memberservice.controller.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-public class MemberResponseDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class MemberUpdateDto {
 
-    private Long id;
     private String name;
     private String status;
-
 }

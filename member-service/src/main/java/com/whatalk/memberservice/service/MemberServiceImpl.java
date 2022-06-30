@@ -24,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public Member findByEmail(String email) {
+    public Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(
                         () -> new MemberApiException(ExceptionHttpStatus.MEMBER_NOT_FOUND)
@@ -32,7 +32,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findById(Long id) {
+    public Member getMemberById(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(
                         () -> new MemberApiException(ExceptionHttpStatus.MEMBER_NOT_FOUND)
@@ -40,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<Member> findAllByName(String name) {
+    public List<Member> getAllMemberByName(String name) {
         return memberRepository.findAllByName(name);
     }
 
@@ -57,26 +57,17 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
-    // TODO: 2022/06/29
     @Override
-    public Member changeName(String name, Long id) {
-        Member target = findById(id);
+    public Member modifyMemberInfo(String email, String name, String status) {
+        checkExistsMember(email);
 
-        target.changeName(name);
+        Member member = memberRepository.findByEmail(email).get();
 
-        return target;
+        member.changeName(name);
+        member.changeStatus(status);
+
+        return memberRepository.save(member);
     }
-
-    // TODO: 2022/06/29
-    @Override
-    public Member changeStatus(String status, Long id) {
-        Member target = findById(id);
-
-        target.changeStatus(status);
-
-        return target;
-    }
-
 
     private void checkDuplicateEmail(String email) {
         memberRepository.findByEmail(email).ifPresent(m -> {
@@ -85,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private void checkExistsMember(String email) {
-        if(memberRepository.existsMemberByEmail(email)){
+        if (!memberRepository.existsMemberByEmail(email)) {
             throw new MemberApiException(ExceptionHttpStatus.MEMBER_NOT_FOUND);
         }
     }

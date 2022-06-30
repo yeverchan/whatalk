@@ -4,15 +4,14 @@ import com.whatalk.memberservice.domain.Member;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface MemberService extends UserDetailsService {
 
-    Optional<Member> findByEmail(String email);
-    List<Member> findAllByName(String name);
+    Member getMemberByEmail(String email);
+    Member getMemberById(Long id);
+    List<Member> getAllMemberByName(String name);
 
     Member create(Member member);
 
-    void changeName(String name, Long id);
-    void changeStatus(String status, Long id);
+    Member modifyMemberInfo(String email, String name, String status);
 }

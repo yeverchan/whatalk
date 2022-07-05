@@ -42,6 +42,19 @@ public class MemberController {
         );
     }
 
+    @PatchMapping
+    public MemberDto modifyMemberInfo(@RequestHeader String email, @RequestBody MemberUpdateDto memberUpdateDto){
+
+        Member member = memberService.modifyMemberInfo(email, memberUpdateDto.getName(), memberUpdateDto.getStatus());
+
+        return MemberDto.builder()
+                .id(member.getId())
+                .email(member.getEmail())
+                .name(member.getName())
+                .status(member.getStatus())
+                .build();
+    }
+
     @GetMapping("/{name}")
     public MembersDto getMembersByName(@PathVariable String name) {
 
@@ -52,19 +65,6 @@ public class MemberController {
                                 .status(member.getStatus())
                                 .build())
                         .collect(Collectors.toList()))
-                .build();
-    }
-
-    @PatchMapping("/info")
-    public MemberDto modifyMemberInfo(@RequestHeader String email, @RequestBody MemberUpdateDto memberUpdateDto){
-
-        Member member = memberService.modifyMemberInfo(email, memberUpdateDto.getName(), memberUpdateDto.getStatus());
-
-        return MemberDto.builder()
-                .id(member.getId())
-                .email(member.getEmail())
-                .name(member.getName())
-                .status(member.getStatus())
                 .build();
     }
 }

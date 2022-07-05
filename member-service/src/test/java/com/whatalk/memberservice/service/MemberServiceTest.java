@@ -2,7 +2,6 @@ package com.whatalk.memberservice.service;
 
 import com.whatalk.memberservice.domain.Member;
 import com.whatalk.memberservice.exception.MemberApiException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class MemberServiceTest {
 
     @DisplayName("회원 가입 테스트")
     @Test
-    void test_create(){
+    void test_create() {
         Member member = Member.builder()
                 .email("테스트@email.com")
                 .password("password")
@@ -39,7 +38,7 @@ public class MemberServiceTest {
 
     @DisplayName("중복 회원 예외 테스트")
     @Test
-    void test_checkDuplicateEmail(){
+    void test_checkDuplicateEmail() {
         Member member1 = Member.builder()
                 .email("테스트@email.com")
                 .password("password")
@@ -53,73 +52,17 @@ public class MemberServiceTest {
                 .build();
 
         memberService.create(member1);
-        MemberApiException exception = assertThrows(MemberApiException.class, () -> memberService.create(member2));
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatus.CONFLICT);
-    }
 
-    @DisplayName("이름 변경 테스트")
-    @Test
-    void test_changeName(){
-        Member member = Member.builder()
-                .email("테스트@email.com")
-                .password("password")
-                .name("멤버")
-                .build();
-
-        member = memberService.create(member);
-
-        memberService.changeName("변경할 이름", member.getId());
-
-        assertThat(member.getName()).isEqualTo("변경할 이름");
-
-    }
-
-    @DisplayName("이름 변경 실패(존재하지 않는 멤버) 테스트")
-    @Test
-    void test_changeName_failure(){
-
-        RuntimeException exception = assertThrows(
-                MemberApiException.class,
-                ()-> memberService.changeName("변경할 이름", 9L)
+        MemberApiException exception = assertThrows(
+                MemberApiException.class, () -> memberService.create(member2)
         );
 
-        assertThat(exception.getMessage()).isEqualTo("사용자 정보를 찾을 수 없습니다.");
-    }
-
-    @DisplayName("상태 메시지 변경 테스트")
-    @Test
-    void test_changeStatus(){
-        Member member = Member.builder()
-                .email("테스트@email.com")
-                .password("password")
-                .name("멤버")
-                .build();
-
-        member = memberService.create(member);
-
-        Assertions.assertNull(member.getStatus());
-
-        memberService.changeStatus("안녕하세요", member.getId());
-
-        assertThat(member.getStatus()).isEqualTo("안녕하세요");
-
-    }
-
-    @DisplayName("상태 메시지 변경 실패(존재하지 않는 멤버) 테스트")
-    @Test
-    void test_changeStatus_failure(){
-
-        RuntimeException exception = assertThrows(
-                MemberApiException.class,
-                ()-> memberService.changeStatus("안녕하세요", 9L)
-        );
-
-        assertThat(exception.getMessage()).isEqualTo("사용자 정보를 찾을 수 없습니다.");
+        assertThat(exception.getExceptionHttpStatus().getValue()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
     @DisplayName("같은 이름의 모든 멤버 검색 테스트")
     @Test
-    void test_findAllByName(){
+    void test_findAllByName() {
         Member member1 = Member.builder()
                 .email("테스트1@email.com")
                 .password("password")
@@ -146,8 +89,27 @@ public class MemberServiceTest {
         memberService.create(member3);
         memberService.create(member4);
 
-        List<Member> memberList = memberService.findAllByName("멤버");
+        List<Member> memberList = memberService.getAllMemberByName("멤버");
 
         assertThat(memberList.size()).isEqualTo(3);
+    }
+
+    @DisplayName("멤버 정보 변경 테스트")
+    @Test
+    void test_modifyMember() {
+        Member member = Member.builder()
+                .email("테스트@email.com")
+                .password("password")
+                .name("멤버")
+                .build();
+
+        memberService.create(member);
+
+        memberService.modifyMemberInfo(member.getEmail(), "변경할 이름", "변경할 상태 메시지");
+
+        Member modified = memberService.getMemberByEmail(member.getEmail());
+
+        assertThat(modified.getName()).isEqualTo("변경할 이름");
+        assertThat(modified.getStatus()).isEqualTo("변경할 상태 메시지");
     }
 }

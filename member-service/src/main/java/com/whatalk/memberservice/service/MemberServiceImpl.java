@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +59,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public Member modifyMemberInfo(String email, String name, String status) {
         checkExistsMember(email);
 
@@ -66,7 +68,7 @@ public class MemberServiceImpl implements MemberService {
         member.changeName(name);
         member.changeStatus(status);
 
-        return memberRepository.save(member);
+        return member;
     }
 
     private void checkDuplicateEmail(String email) {

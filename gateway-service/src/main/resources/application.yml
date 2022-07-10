@@ -36,9 +36,11 @@ spring:
             - CustomAuthHeaderFilter
 
         - id: chat-service
-          uri: lb://CHAT-SERVICE
+          uri: lb:ws://CHAT-SERVICE
           predicates:
-            - Path=/chat/**
+            - Path=/chats/**
+#          filters:
+#            - CustomAuthHeaderFilter
 
 eureka:
   instance:

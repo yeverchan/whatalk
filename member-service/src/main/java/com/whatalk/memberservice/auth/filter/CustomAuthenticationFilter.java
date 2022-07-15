@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -77,10 +78,14 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         response.setCharacterEncoding("UTF-8");
 
         ObjectMapper mapper = new ObjectMapper();
-
+        
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpServletResponse.SC_UNAUTHORIZED)
-                .message(failed.getMessage())
+                .messages(
+                        List.of(
+                                failed.getMessage()
+                        )
+                )
                 .build();
 
         String body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(errorResponse);

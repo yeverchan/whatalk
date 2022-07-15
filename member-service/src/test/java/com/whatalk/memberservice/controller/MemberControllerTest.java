@@ -125,7 +125,7 @@ class MemberControllerTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(response.getMessage()).isEqualTo("이미 존재하는 이메일입니다.");
+        assertThat(response.getMessages()).isEqualTo("이미 존재하는 이메일입니다.");
     }
 
     @DisplayName("토큰 발급 테스트")

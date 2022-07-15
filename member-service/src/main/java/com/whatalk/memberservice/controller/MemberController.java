@@ -43,7 +43,7 @@ public class MemberController {
     }
 
     @PatchMapping
-    public MemberDto modifyMemberInfo(@RequestHeader String email, @RequestBody MemberUpdateDto memberUpdateDto){
+    public MemberDto modifyMemberInfo(@RequestHeader String email, @RequestBody @Valid MemberUpdateDto memberUpdateDto){
 
         Member member = memberService.modifyMemberInfo(email, memberUpdateDto.getName(), memberUpdateDto.getStatus());
 

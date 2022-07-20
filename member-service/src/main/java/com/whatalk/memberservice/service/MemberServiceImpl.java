@@ -65,7 +65,10 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = memberRepository.findByEmail(email).get();
 
-        member.changeName(name);
+        if(name != null) {
+            member.changeName(name);
+        }
+
         member.changeStatus(status);
 
         return member;

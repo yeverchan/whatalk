@@ -12,10 +12,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class MemberUpdateDto {
 
-    @NotNull(message = "이름이 존재하지 않습니다.")
     @Size(min = 2, max = 10, message = "이름은 2자에서 10자 사이여야 합니다.")
     private String name;
 
+    @NotNull(message = "상태 메시지 필드가 존재하지 않습니다.")
     @Size(max = 50, message = "상태 메시지는 50자 이하여야 합니다.")
     private String status;
 }

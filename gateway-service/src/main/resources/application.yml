@@ -12,6 +12,10 @@ spring:
 
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:8080"
       httpclient:
         connect-timeout: 1000
         response-timeout: 5s
@@ -34,7 +38,7 @@ spring:
             - Path=/members/**
           filters:
             - CustomAuthHeaderFilter
-
+#       ws 분리
         - id: chat-service
           uri: lb:ws://CHAT-SERVICE
           predicates:

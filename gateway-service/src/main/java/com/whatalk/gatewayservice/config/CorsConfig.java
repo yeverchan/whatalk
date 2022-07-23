@@ -2,6 +2,7 @@ package com.whatalk.gatewayservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
@@ -10,7 +11,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.List;
 
 @Configuration
-public class CorsConfig extends CorsConfiguration {
+public class CorsConfig {
 
     private final Environment environment;
 
@@ -19,6 +20,7 @@ public class CorsConfig extends CorsConfiguration {
     }
 
     @Bean
+    @Order(-1)
     public CorsWebFilter corsFilter() {
 
         String LOCAL = environment.getProperty("ALLOW.ORIGIN.LOCAL");
@@ -37,9 +39,10 @@ public class CorsConfig extends CorsConfiguration {
 
         corsConfiguration.setExposedHeaders(EXPOSED_HEADERS);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
+        UrlBasedCorsConfigurationSource configSource = new UrlBasedCorsConfigurationSource();
+        configSource.registerCorsConfiguration("/**", corsConfiguration);
 
-        return new CorsWebFilter(source);
+        return new CorsWebFilter(configSource);
     }
+
 }

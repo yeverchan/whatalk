@@ -8,17 +8,16 @@ spring:
 
 #  refactor spring.config
   config:
-    import: classpath:jwt.yml
+    import: classpath:jwt.yml, classpath:cors.yml
 
   cloud:
     gateway:
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: "http://localhost:8080"
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
       httpclient:
         connect-timeout: 1000
         response-timeout: 5s
+
       routes:
         - id: login
           uri: lb://MEMBER-SERVICE
